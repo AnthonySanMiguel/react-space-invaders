@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const width = 800;
+const height = window.innerHeight;
+const ratio = window.devicePixelRatio || 1;
 
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      screen: {
+        width: width,
+        height: height,
+        ratio: ratio
+      },
+    }
+  }
+
+  render() {
+
+    return (
+        <div>
+          <canvas ref="canvas"
+                  width={this.state.screen.width * this.state.screen.ratio}
+                  height={this.state.screen.height * this.state.screen.ratio}/>
+        </div>
+    );
+  }
+}
 export default App;
