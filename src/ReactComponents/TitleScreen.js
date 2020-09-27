@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export default class TitleScreen extends React.Component {
-    render () {
+    render() {
         return (
             <div>
                 <span className="centerScreen title">React Invaders</span>

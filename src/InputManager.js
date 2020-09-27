@@ -1,39 +1,43 @@
 const KEY = {
     LEFT:  37,
     RIGHT: 39,
+    UP: 38,
+    DOWN: 40,
     A: 65,
     D: 68,
+    W: 87,
+    S: 83,
     SPACE: 32,
     ENTER: 13
 };
 
 export default class InputManager {
     constructor() {
-        this.pressedKeys = {left: 0, right: 0, space: 0, enter: 0};
+        this.pressedKeys = { left: 0, right: 0, up: 0, down: 0, space: 0, enter: 0 };
     }
 
-    handleKeys(value, e) {
+    handleKeys(value, e){
         let keys = this.pressedKeys;
 
         switch (e.keyCode) {
             case KEY.LEFT:
             case KEY.A:
-                keys.left = value;
+                keys.left  = value;
                 break;
             case KEY.RIGHT:
             case KEY.D:
-                keys.right = value;
+                keys.right  = value;
                 break;
             case KEY.UP:
             case KEY.W:
-                keys.up = value;
+                keys.up  = value;
                 break;
             case KEY.DOWN:
             case KEY.S:
-                keys.down = value;
+                keys.down  = value;
                 break;
             case KEY.SPACE:
-                keys.space = value;
+                keys.space  = value;
                 break;
             case KEY.ENTER:
                 keys.enter = value;
@@ -43,7 +47,7 @@ export default class InputManager {
         this.pressedKeys = keys;
     }
 
-        bindKeys() {
+    bindKeys() {
         window.addEventListener('keyup',   this.handleKeys.bind(this, false));
         window.addEventListener('keydown', this.handleKeys.bind(this, true));
     }
