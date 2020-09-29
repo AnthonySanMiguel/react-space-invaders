@@ -24,6 +24,7 @@ export default class Bullet extends GameObject {
         context.translate(this.position.x, this.position.y);
         context.fillStyle = '#FF0';
         context.lineWidth = 1;
+        // Lines which 'draw' the shape of the bullets on the canvas
         context.beginPath();
         context.arc(0, 0, 2, 0, 2 * Math.PI);
         context.closePath();

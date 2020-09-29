@@ -30,6 +30,7 @@ class App extends Component {
                 height: height,
                 ratio: window.devicePixelRatio || 1
             },
+            // Starting score
             score: 0,
             gameState: GameState.StartScreen,
             previousState: GameState.StartScreen,
@@ -54,33 +55,19 @@ class App extends Component {
         });
     }
 
-    startGame() {
-        let ship = new Ship({
-            onDie: this.die.bind(this),
-            // Set x and y position so that the ship will be drawn in the lower middle of the screen.
-            position: {
-                x: this.state.screen.width/2,
-                y: this.state.screen.height - 50
-            }});
-        this.ship = ship;
-
-        this.createInvaders(27);
-
-        this.setState({
-            gameState: GameState.Playing,
-            score: 0
-        });
-        this.showControls = true;
-    }
-
+    // Upon player "death"...
     die() {
+        // Set game state to "Game Over"
         this.setState({ gameState: GameState.GameOver });
+        // Remove player ship from canvas
         this.ship = null;
+        // Remove all enemies from canvas (e.g. from enemy array)
         this.invaders = [];
         this.lastStateChange = Date.now();
     }
 
     increaseScore(val) {
+        // For every enemy destroyed, add 500 points
         this.setState({ score: this.state.score + 500 });
     }
 
@@ -91,6 +78,27 @@ class App extends Component {
         context.scale(this.state.screen.ratio, this.state.screen.ratio);
         context.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
         context.globalAlpha = 1;
+    }
+
+    startGame() {
+        let ship = new Ship({
+            onDie: this.die.bind(this),
+            // Set x and y position so that the ship will be drawn in the lower middle of the screen.
+            position: {
+                x: this.state.screen.width/2,
+                y: this.state.screen.height - 50
+            }});
+        this.ship = ship;
+
+        // Number of enemies that spawn
+        this.createInvaders(27);
+
+        this.setState({
+            gameState: GameState.Playing,
+            // Reset the score each time StartGame is called so score doesn't accumulate over multiple play sessions
+            score: 0
+        });
+        this.showControls = true;
     }
 
     // To actually switch from the initial state to the Playing state, we have to wait for the user to press the Enter button.
@@ -112,6 +120,7 @@ class App extends Component {
             this.startGame();
         }
 
+        // Allows us to transition from the GameOver-screen back to the Start-screen.
         if (this.state.gameState === GameState.GameOver && keys.enter) {
             this.clearBackground();
             this.setState({ gameState: GameState.StartScreen});
@@ -131,7 +140,11 @@ class App extends Component {
 
             context.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
             context.globalAlpha = 1;
+            // Check for a collision between player-fired bullets and invaders.
+            // If true, the affected invader will be destroyed.
             checkCollisionsWith(this.ship.bullets, this.invaders);
+            // Check for a collision between player ship and invaders.
+            // If true, the player ship will be destroyed.
             checkCollisionsWith([this.ship], this.invaders);
 
             if (keys.space || keys.left || keys.right) {
@@ -139,6 +152,8 @@ class App extends Component {
             }
 
             for (let i = 0; i < this.invaders.length; i++) {
+                // Check for a collision between invader-fired bullets and player ship.
+                // If true, the player ship will be destroyed.
                 checkCollisionsWith(this.invaders[i].bullets, [this.ship]);
             }
 
@@ -155,13 +170,17 @@ class App extends Component {
         requestAnimationFrame(() => {this.update()});
     }
 
+    // Initializes our invaders array and sets their positions.
+    // It places each invader on the right side of the previous one.
+    // If there is no space, the next invader will be drawn on a new row.
     createInvaders(count) {
         const newPosition = { x: 100, y: 20 };
         let swapStartX = true;
 
-        for (var i = 0; i < count; i++) {
+        for (let i = 0; i < count; i++) {
             const invader = new Invader({
                 position: { x: newPosition.x, y: newPosition.y },
+                // When an invader is destroyed (e.g. "onDie", add to the score)
                 onDie: this.increaseScore.bind(this, false)
             });
 
@@ -177,6 +196,8 @@ class App extends Component {
         }
     }
 
+    // Contains the logic for drawing our invaders and keeping them inbound while moving.
+    // If an invader is deleted (delete === true), it will be removed from the array.
     renderInvaders(state) {
         let index = 0;
         let reverse = false;
@@ -201,6 +222,7 @@ class App extends Component {
         }
     }
 
+    // If any of our invaders reaches either edge of the screen, we call the reverseInvaders method which in turn calls the reverse method of each invader, thus changing its direction.
     reverseInvaders() {
         let index = 0;
         for (let invader of this.invaders) {
@@ -229,8 +251,9 @@ class App extends Component {
         return (
             <div>
                 { this.showControls && <ControlOverlay /> }
-                {/*Only draw the TitleScreen in the initial state*/}
+                {/* If game state = "StartScreen", show the title screen */}
                 { this.state.gameState === GameState.StartScreen && <TitleScreen /> }
+                {/* If game state = "GameOver", show the game over screen */}
                 { this.state.gameState === GameState.GameOver && <GameOverScreen score= { this.state.score } /> }
                 <canvas ref="canvas"
                         width={ this.state.screen.width * this.state.screen.ratio }

@@ -25,6 +25,9 @@ export default class Invader extends GameObject {
         }
     }
 
+    // Increments or decrements the positions x coordinate.
+    // However, instead of reacting to user input, we check the Direction-enum to see, where the invader should move.
+    // This way, instead of jumping to the other side of the screen, they will simply turn around when they reach one edge of the screen.
     update() {
         if (this.direction === Direction.Right) {
             this.position.x += this.speed;
@@ -32,13 +35,15 @@ export default class Invader extends GameObject {
             this.position.x -= this.speed;
         }
 
+        // We have to create a new condition that triggers the enemy shooting since the invaders aren’t player controlled.
+        // We will replace the key-check with a randomizer and simply append that to our lastShot condition.
         let nextShoot = Math.random() * 6 * 1000000
-
 
         let now = Date.now();
         if (now - this.shootDelay > nextShoot && this.bullets.length <= 2 && now - this.lastShot > nextShoot) {
             const bullet = new Bullet({
                 position: { x: this.position.x, y : this.position.y - 5 },
+                // Ensures projectiles fired move downwards
                 direction : "down"
             });
 
@@ -73,6 +78,7 @@ export default class Invader extends GameObject {
         context.strokeStyle = '#F00';
         context.fillStyle = '#F00';
         context.lineWidth = 2;
+        // Lines which 'draw' the shape of the enemies on the canvas
         context.beginPath();
         context.moveTo(-5, 25);
         context.arc(0, 25, 5, 0, Math.PI);

@@ -18,9 +18,12 @@ export default class Ship extends GameObject {
             this.position.x -= this.speed; // Decrement (move to the left [-] on the x axis)
         }
 
+        // We check if the space key is pressed and if at least 250ms have passed since the last bullet was fired.
+        // Then we add a new bullet at the ship’s position and set its direction to “up”, so it moves upwards away from the player and towards the enemies.
         if (keys.space && Date.now() - this.lastShot > 250) {
             const bullet = new Bullet({
                 position: { x: this.position.x, y : this.position.y - 5 },
+                // Ensures projectiles fired move upwards
                 direction : "up"
             });
 
@@ -31,7 +34,9 @@ export default class Ship extends GameObject {
 
     renderBullets(state) {
         let index = 0;
+        // We loop through the bullets array and call each bullet’s update and render methods.
         for (let bullet of this.bullets) {
+            // When a bullet is deleted, we remove it from the array via the splice method.
             if (bullet.delete) {
                 this.bullets.splice(index, 1);
             } else {

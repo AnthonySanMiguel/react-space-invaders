@@ -10,6 +10,7 @@ export default class GameOverScreen extends React.Component {
         return (
             <div>
                 <span className="centerScreen title">GameOver!</span>
+                {/* Added a state variable score which will tell the player how well they performed. */}
                 <span className="centerScreen score">Score: { this.state.score }</span>
                 <span className="centerScreen pressEnter">Press enter to continue!</span>
             </div>
