@@ -8,11 +8,14 @@ export default class Ship extends GameObject {
         this.lastShot = 0;
     }
 
+    // Responsible for updating the position of the ship according to user input:
     update(keys) {
+        // Increment/decrement the x coordinate of the ship position.
+        // This way the ship will move left or right depending on the pressed keys.
         if (keys.right) {
-            this.position.x += this.speed;
+            this.position.x += this.speed; // Increment (move to the right [+] on the x axis)
         } else if (keys.left) {
-            this.position.x -= this.speed;
+            this.position.x -= this.speed; // Decrement (move to the left [-] on the x axis)
         }
 
         if (keys.space && Date.now() - this.lastShot > 250) {
@@ -40,10 +43,13 @@ export default class Ship extends GameObject {
     }
 
     render(state) {
+        // Ensures our ship stays within the frame.
         if(this.position.x > state.screen.width) {
+            // Set the ships position.x to 0 when it leaves the screen on the right side...
             this.position.x = 0;
         }
         else if(this.position.x < 0) {
+            // and to the width of the screen when it leaves on the left side.
             this.position.x = state.screen.width;
         }
         if(this.position.y > state.screen.height) {
@@ -61,6 +67,7 @@ export default class Ship extends GameObject {
         context.strokeStyle = '#ffffff';
         context.fillStyle = '#ffffff';
         context.lineWidth = 2;
+        // Lines which 'draw' the shape of the ship on the canvas
         context.beginPath();
         context.moveTo(0, -25);
         context.lineTo(15, 15);
